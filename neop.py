@@ -1,18 +1,12 @@
-import pandas as pd
-
 ##clean_up
 
 #import csv 
+#Age selection (< 5 year)
+
+import pandas as pd
 pd.set_option('display.max_columns', None)
 thip = pd.read_csv('/Users/surasaksangkhathat/Desktop/THIP/thip_data.csv')
-
-#set selection only interested age (<1)
-
-thip = thip.loc[thip['age_y'] < 1]
-
-#find duplicated identity ('tran_id','pid') and delete
-
-thip = thip.drop_duplicates(subset=['tran_id', 'pid'], keep='first')
+thip = thip.loc[thip['age_y'] < 5]
 
 #Working with format
 
@@ -48,7 +42,7 @@ thip['timedsc'] = [getTime(x) for x in fillfour(e)]
 
 #set selection only interested ICD_10
 
-q_neop = ['Q390','Q391','Q392','Q393','Q410','Q411','Q412','Q418','Q419']
+q_neop = ['Q390','Q391','Q392','Q393','Q410','Q411','Q412','Q418','Q419', 'Q431','Q421', 'Q422', 'Q423', 'Q428', 'Q429','Q790','Q792','Q793']
 neop = thip.loc[thip['pdx'].isin(q_neop)
 | thip['sdx1'].isin(q_neop)
 | thip['sdx2'].isin(q_neop)
@@ -71,6 +65,46 @@ neop = thip.loc[thip['pdx'].isin(q_neop)
 | thip['sdx19'].isin(q_neop)
 | thip['sdx20'].isin(q_neop)
 ]
+
+
+neop = neop.drop_duplicates(subset=['pid'], keep='first')
+len(neop)
+
+#Package for selection by ICD-10 list
+
+def select_Q(source, condition, dupdel = True):
+    output = source.loc[source['pdx'].isin(condition)
+    | source['sdx1'].isin(condition)
+    | source['sdx2'].isin(condition)
+    | source['sdx3'].isin(condition)
+    | source['sdx4'].isin(condition)
+    | source['sdx5'].isin(condition)
+    | source['sdx6'].isin(condition)
+    | source['sdx7'].isin(condition)
+    | source['sdx8'].isin(condition)
+    | source['sdx9'].isin(condition)
+    | source['sdx10'].isin(condition)
+    | source['sdx11'].isin(condition)
+    | source['sdx12'].isin(condition)
+    | source['sdx13'].isin(condition)
+    | source['sdx14'].isin(condition)
+    | source['sdx15'].isin(condition)
+    | source['sdx16'].isin(condition)
+    | source['sdx17'].isin(condition)
+    | source['sdx18'].isin(condition)
+    | source['sdx19'].isin(condition)
+    | source['sdx20'].isin(condition)
+    ]
+    print('Number of selected records before duplication deletion are', len(output))
+    if dupdel == True:
+        output = output.drop_duplicates(subset=['pid'], keep='first')
+    else:
+        exit
+    print('Number of selected records after duplication deletion are', len(output))
+    return output
+        
+
+#Esophageal malformations
 
 q_esop = ['Q390','Q391','Q392','Q393']
 esop = thip.loc[thip['pdx'].isin(q_esop)
@@ -95,7 +129,114 @@ esop = thip.loc[thip['pdx'].isin(q_esop)
 | thip['sdx19'].isin(q_esop)
 | thip['sdx20'].isin(q_esop)
 ]
+
+esop = esop.drop_duplicates(subset=['pid'], keep='first')
 len(esop)
+
+q_esop_390 = ['Q390']
+esop_390 = esop.loc[esop['pdx'].isin(q_esop_390)
+| esop['sdx1'].isin(q_esop_390)
+| esop['sdx2'].isin(q_esop_390)
+| esop['sdx3'].isin(q_esop_390)
+| esop['sdx4'].isin(q_esop_390)
+| esop['sdx5'].isin(q_esop_390)
+| esop['sdx6'].isin(q_esop_390)
+| esop['sdx7'].isin(q_esop_390)
+| esop['sdx8'].isin(q_esop_390)
+| esop['sdx9'].isin(q_esop_390)
+| esop['sdx10'].isin(q_esop_390)
+| esop['sdx11'].isin(q_esop_390)
+| esop['sdx12'].isin(q_esop_390)
+| esop['sdx13'].isin(q_esop_390)
+| esop['sdx14'].isin(q_esop_390)
+| esop['sdx15'].isin(q_esop_390)
+| esop['sdx16'].isin(q_esop_390)
+| esop['sdx17'].isin(q_esop_390)
+| esop['sdx18'].isin(q_esop_390)
+| esop['sdx19'].isin(q_esop_390)
+| esop['sdx20'].isin(q_esop_390)
+]
+
+
+q_esop_391 = ['Q391']
+esop_391 = esop.loc[esop['pdx'].isin(q_esop_391)
+| esop['sdx1'].isin(q_esop_391)
+| esop['sdx2'].isin(q_esop_391)
+| esop['sdx3'].isin(q_esop_391)
+| esop['sdx4'].isin(q_esop_391)
+| esop['sdx5'].isin(q_esop_391)
+| esop['sdx6'].isin(q_esop_391)
+| esop['sdx7'].isin(q_esop_391)
+| esop['sdx8'].isin(q_esop_391)
+| esop['sdx9'].isin(q_esop_391)
+| esop['sdx10'].isin(q_esop_391)
+| esop['sdx11'].isin(q_esop_391)
+| esop['sdx12'].isin(q_esop_391)
+| esop['sdx13'].isin(q_esop_391)
+| esop['sdx14'].isin(q_esop_391)
+| esop['sdx15'].isin(q_esop_391)
+| esop['sdx16'].isin(q_esop_391)
+| esop['sdx17'].isin(q_esop_391)
+| esop['sdx18'].isin(q_esop_391)
+| esop['sdx19'].isin(q_esop_391)
+| esop['sdx20'].isin(q_esop_391)
+]
+
+q_esop_392 = ['Q392']
+esop_392 = esop.loc[esop['pdx'].isin(q_esop_392)
+| esop['sdx1'].isin(q_esop_392)
+| esop['sdx2'].isin(q_esop_392)
+| esop['sdx3'].isin(q_esop_392)
+| esop['sdx4'].isin(q_esop_392)
+| esop['sdx5'].isin(q_esop_392)
+| esop['sdx6'].isin(q_esop_392)
+| esop['sdx7'].isin(q_esop_392)
+| esop['sdx8'].isin(q_esop_392)
+| esop['sdx9'].isin(q_esop_392)
+| esop['sdx10'].isin(q_esop_392)
+| esop['sdx11'].isin(q_esop_392)
+| esop['sdx12'].isin(q_esop_392)
+| esop['sdx13'].isin(q_esop_392)
+| esop['sdx14'].isin(q_esop_392)
+| esop['sdx15'].isin(q_esop_392)
+| esop['sdx16'].isin(q_esop_392)
+| esop['sdx17'].isin(q_esop_392)
+| esop['sdx18'].isin(q_esop_392)
+| esop['sdx19'].isin(q_esop_392)
+| esop['sdx20'].isin(q_esop_392)
+]
+
+q_esop_393 = ['Q393']
+esop_393 = esop.loc[esop['pdx'].isin(q_esop_393)
+| esop['sdx1'].isin(q_esop_393)
+| esop['sdx2'].isin(q_esop_393)
+| esop['sdx3'].isin(q_esop_393)
+| esop['sdx4'].isin(q_esop_393)
+| esop['sdx5'].isin(q_esop_393)
+| esop['sdx6'].isin(q_esop_393)
+| esop['sdx7'].isin(q_esop_393)
+| esop['sdx8'].isin(q_esop_393)
+| esop['sdx9'].isin(q_esop_393)
+| esop['sdx10'].isin(q_esop_393)
+| esop['sdx11'].isin(q_esop_393)
+| esop['sdx12'].isin(q_esop_393)
+| esop['sdx13'].isin(q_esop_393)
+| esop['sdx14'].isin(q_esop_393)
+| esop['sdx15'].isin(q_esop_393)
+| esop['sdx16'].isin(q_esop_393)
+| esop['sdx17'].isin(q_esop_393)
+| esop['sdx18'].isin(q_esop_393)
+| esop['sdx19'].isin(q_esop_393)
+| esop['sdx20'].isin(q_esop_393)
+]
+
+def sex_ratio(anom):
+    anom_sex = anom.groupby(['sex'])['sex'].count().to_list()
+    anom_sex_ratio = anom_sex[0]/anom_sex[1]
+    print(anom_sex_ratio)
+    
+
+#Duodenal atresia/stenosis
 
 q_duo = ['Q410']
 duo = thip.loc[thip['pdx'].isin(q_duo)
@@ -120,7 +261,11 @@ duo = thip.loc[thip['pdx'].isin(q_duo)
 | thip['sdx19'].isin(q_duo)
 | thip['sdx20'].isin(q_duo)
 ]
+duo = duo.drop_duplicates(subset=['pid'], keep='first')
+
 len(duo)
+
+
 
 q_small = ['Q411','Q412','Q418','Q419'] 
 small = thip.loc[thip['pdx'].isin(q_small)
@@ -146,6 +291,10 @@ small = thip.loc[thip['pdx'].isin(q_small)
 | thip['sdx20'].isin(q_small)
 ]
 
+
+small = small.drop_duplicates(subset=['pid'], keep='first')
+len(small)
+
 q_hscr = ['Q431']
 hscr = thip.loc[thip['pdx'].isin(q_hscr)
 | thip['sdx1'].isin(q_hscr)
@@ -169,6 +318,9 @@ hscr = thip.loc[thip['pdx'].isin(q_hscr)
 | thip['sdx19'].isin(q_hscr)
 | thip['sdx20'].isin(q_hscr)
 ]
+
+hscr = hscr.drop_duplicates(subset=['pid'], keep='first')
+len(hscr)
 
 q_arm = ['Q421', 'Q422', 'Q423', 'Q428', 'Q429']
 arm = thip.loc[thip['pdx'].isin(q_arm)
@@ -194,6 +346,8 @@ arm = thip.loc[thip['pdx'].isin(q_arm)
 | thip['sdx20'].isin(q_arm)
 ]
 
+arm = arm.drop_duplicates(subset=['pid'], keep='first')
+len(arm)
 
 q_omp = ['Q792']
 omp = thip.loc[thip['pdx'].isin(q_omp)
@@ -219,6 +373,9 @@ omp = thip.loc[thip['pdx'].isin(q_omp)
 | thip['sdx20'].isin(q_omp)
 ]
 
+omp = omp.drop_duplicates(subset=['pid'], keep='first')
+len(omp)
+
 q_gas = ['Q793']
 gas = thip.loc[thip['pdx'].isin(q_gas)
 | thip['sdx1'].isin(q_gas)
@@ -242,6 +399,9 @@ gas = thip.loc[thip['pdx'].isin(q_gas)
 | thip['sdx19'].isin(q_gas)
 | thip['sdx20'].isin(q_gas)
 ]
+
+gas = gas.drop_duplicates(subset=['pid'], keep='first')
+len(gas)
 
 q_cdh = ['Q790']
 cdh = thip.loc[thip['pdx'].isin(q_cdh)
@@ -267,8 +427,12 @@ cdh = thip.loc[thip['pdx'].isin(q_cdh)
 | thip['sdx20'].isin(q_cdh)
 ]
 
+cdh = cdh.drop_duplicates(subset=['pid'], keep='first')
+len(cdh)
+
 #Count by groups
 
+neop_year = neop.groupby(['g_year'])['g_year'].count().to_list()
 esop_year = esop.groupby(['g_year'])['g_year'].count().to_list()
 duo_year = duo.groupby(['g_year'])['g_year'].count().to_list()
 small_year = small.groupby(['g_year'])['g_year'].count().to_list()
@@ -282,7 +446,7 @@ cdh_year = cdh.groupby(['g_year'])['g_year'].count().to_list()
 
 live_birth = [656571, 628450, 596736, 569338]
 
-esop_inc = [i*10000 / j for i, j in zip(eso_year, live_birth)]
+esop_inc = [i*10000 / j for i, j in zip(esop_year, live_birth)]
 duo_inc = [i*10000 / j for i, j in zip(duo_year, live_birth)]
 small_inc = [i*10000 / j for i, j in zip(small_year, live_birth)]
 hscr_inc = [i*10000 / j for i, j in zip(hscr_year, live_birth)]
@@ -314,7 +478,7 @@ cdh_region = cdh.groupby(['health_region'])['health_region'].count().to_list()
 import matplotlib.pyplot as plt
 import seaborn as sns
 ##define data
-data = eso_region
+data = esop_region
 labels = ['reg 1', 'reg 2', 'reg 3', 'reg 4', 'reg 5'
           ,'reg 6', 'reg 7', 'reg 8', 'reg 9', 'reg 10'
           , 'reg 11', 'reg 12', 'Bangkok']
@@ -324,12 +488,17 @@ colors = sns.color_palette('bright')[0:5]
 plt.pie(data, labels = labels, colors = colors, autopct='%.0f%%')
 plt.show()
 
+neop_sex = neop.groupby(['sex'])['sex'].count().to_list()
+neop_sex_ratio = neop_sex[0]/neop_sex[1]
 eso_sex = esop.groupby(['sex'])['sex'].count().to_list()
 duo_sex = duo.groupby(['sex'])['sex'].count().to_list()
 small_sex = small.groupby(['sex'])['sex'].count().to_list()
 
 hscr_sex = hscr.groupby(['sex'])['sex'].count().to_list()
+hscr_sex_ratio = hscr_sex[0]/hscr_sex[1]
+
 arm_sex = arm.groupby(['sex'])['sex'].count().to_list()
+
 omp_sex = omp.groupby(['sex'])['sex'].count().to_list()
 
 gas_sex = gas.groupby(['sex'])['sex'].count().to_list()
@@ -344,6 +513,13 @@ esop_mortal_rate = 100*esop_mortal_count/esop_count
 print(esop_count)
 print(esop_mortal_count)
 print(esop_mortal_rate)
+
+def mortal(anom):
+    anom_count = len(anom)
+    anom_mortal = len(anom.loc[anom['death_date'].notnull()])
+    anom_mortal_rate = 100*anom_mortal/anom_count
+    print('total death cases =', anom_mortal,  'in', anom_count, 'cases')
+    print('mortality rate =', anom_mortal_rate)
 
 duo_count = len(duo)
 duo_mortal = duo.loc[duo['death_date'].notnull()]
@@ -396,6 +572,15 @@ cdh_mortal_rate = 100*cdh_mortal_count/cdh_count
 print(cdh_count)
 print(cdh_mortal_count)
 print(cdh_mortal_rate)
+
+neop_count = len(neop)
+neop_mortal = neop.loc[neop['death_date'].notnull()]
+neop_mortal_year = neop_mortal.groupby(['g_year'])['g_year'].count().to_list()
+neop_mortal_count = len(neop.loc[neop['discht']==9])+len(neop.loc[neop['discht']==8]) + neop.loc[(neop['discht']!=9) & (neop['discht'] !=8)]['death_date'].notnull().sum()
+neop_mortal_rate = 100*neop_mortal_count/neop_count
+print(neop_count)
+print(neop_mortal_count)
+print(neop_mortal_rate)
 
 #Down_association
 
@@ -586,3 +771,67 @@ cdh_down = cdh.loc[cdh['pdx'].isin(q_down)
 ]
 
 
+#count and sort procedure
+def procdict(diag):
+    proc_list = []
+    procedure_dict = {}
+    proc_list = diag['proc1'].to_list()
+    proc_list = proc_list + diag['proc2'].to_list()
+    proc_list = proc_list + diag['proc3'].to_list()
+    proc_list = proc_list + diag['proc4'].to_list()
+    proc_list = proc_list + diag['proc5'].to_list()
+    proc_list = proc_list + diag['proc6'].to_list()
+    proc_list = proc_list + diag['proc7'].to_list()
+    proc_list = proc_list + diag['proc8'].to_list()
+    proc_list = proc_list + diag['proc9'].to_list()
+    proc_list = proc_list + diag['proc10'].to_list()
+    proc_list = proc_list + diag['proc11'].to_list()
+    proc_list = proc_list + diag['proc12'].to_list()
+    proc_list = proc_list + diag['proc13'].to_list()
+    proc_list = proc_list + diag['proc14'].to_list()
+    proc_list = proc_list + diag['proc15'].to_list()
+    proc_list = proc_list + diag['proc16'].to_list()
+    proc_list = proc_list + diag['proc17'].to_list()
+    proc_list = proc_list + diag['proc18'].to_list()
+    proc_list = proc_list + diag['proc19'].to_list()
+    proc_list = proc_list + diag['proc20'].to_list()
+    proc_list = [item for item in proc_list if not(pd.isnull(item)) == True]
+    for entry in proc_list:
+        if entry in(procedure_dict):
+            procedure_dict[entry] += 1
+        else:
+            procedure_dict[entry] = 1
+    for key in sorted(procedure_dict.keys()):
+        print(key , " :: " , procedure_dict[key])
+    
+
+# Select by procedure
+proc_eso = ['4251', '4252','4253','4254','4255','4256','4257','4258','4259']
+
+def select_procedure(source, condition):
+    output = source.loc[source['proc1'].isin(condition)
+    | source['proc2'].isin(condition)
+    | source['proc3'].isin(condition)
+    | source['proc4'].isin(condition)
+    | source['proc5'].isin(condition)
+    | source['proc6'].isin(condition)
+    | source['proc7'].isin(condition)
+    | source['proc8'].isin(condition)
+    | source['proc9'].isin(condition)
+    | source['proc10'].isin(condition)
+    | source['proc11'].isin(condition)
+    | source['proc12'].isin(condition)
+    | source['proc13'].isin(condition)
+    | source['proc14'].isin(condition)
+    | source['proc15'].isin(condition)
+    | source['proc16'].isin(condition)
+    | source['proc17'].isin(condition)
+    | source['proc18'].isin(condition)
+    | source['proc19'].isin(condition)
+    | source['proc20'].isin(condition)
+    ]
+    print('Number of selected records are', len(output))
+    return output
+
+esop_pro = select_procedure(thip, proc_eso)
+esop_pro = esop_pro.drop_duplicates(subset=['pid'], keep='first')
