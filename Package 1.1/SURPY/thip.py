@@ -1,11 +1,15 @@
-
-
 #import csv 
 #Age selection 
 
 import pandas as pd
 pd.set_option('display.max_columns', None)
 path = '/Users/surasaksangkhathat/Desktop/THIP/thip_data.csv'
+
+path2 = '/Users/surasaksangkhathat/Desktop/THIP/thip_data.xlsx'
+
+def soapsheetin(path):
+	data = pd.read_excel(path, sheet_name='Sheet1', parse_dates=True, engine='openpyxl')
+	return data
 
 def thipimport(path):
     thip = pd.read_csv(path)
@@ -46,10 +50,13 @@ def clean_datetime(thip):
     thip['marry_status'] = thip.marry_status.astype('Int64')
     return thip
 
-def los(thip):
-    thip['los'] = thip['datedsc'] - thip['dateadm']
-    print(thip['los'])
-    print('Average length of stay(days) = ', thip['los'].mean())
+def los(diag):            
+    diag['los'] = diag['datedsc'] - diag['dateadm']
+    diag['los'] = diag['los'].astype(str)
+    diag['los'] = diag['los'].str.replace('days','')
+    diag['los'] = diag['los'].astype(int)
+    print('Average length of stay(days)overall = ', diag['los'].mean())
+    print('Average length of stay(days) = ', diag.groupby(['discht'])['los'].mean())
 
 #Library of diagnosis
 
@@ -211,8 +218,10 @@ def count_down(diag):
     | diag['sdx19'].isin(q_down)
     | diag['sdx20'].isin(q_down)
     ]
+    
     print('Number of DS in this diagnosis = ', len(down))
-    print('Ratio of DS in this diagnosis = ', len(down)/len(diag))
+    print('Ratio of DS in this diagnosis = ', 100*len(down)/len(diag),'%')
+    return down
     
 def count_heart(diag):
     heart = diag.loc[diag['pdx'].isin(q_cardiac)
@@ -238,7 +247,8 @@ def count_heart(diag):
     | diag['sdx20'].isin(q_cardiac)
     ]
     print('Number of congenital heart disesases in this diagnosis = ', len(heart))
-    print('Ratio of congenital heart diseases in this diagnosis = ', len(heart)/len(diag))
+    print('Ratio of congenital heart diseases in this diagnosis = ', 100*len(heart)/len(diag),'%')
+    return heart
     
 def count_assoc(diag, condition):
     cond = diag.loc[diag['pdx'].isin(condition)
@@ -264,7 +274,7 @@ def count_assoc(diag, condition):
     | diag['sdx20'].isin(condition)
     ]
     print('Number of selected condition in this diagnosis = ', len(cond))
-    print('Ratio of congenital heart diseases in this diagnosis = ', len(cond)/len(diag))
+    print('Ratio of selected condition in this diagnosis = ', 100*len(cond)/len(diag),'%')
 
 #count and sort procedure
 
@@ -304,8 +314,8 @@ def procdict(diag):
     print(sorted(procedure_dict.items(), key=lambda x: x[1], reverse = True))
     return procedure_dict
 
-def filterdict(procedure_dict):
-    fourdict = {k: v for k, v in procedure_dict.items() if k.startswith('4')}
+def filterdict(procedure_dict, start_string):
+    fourdict = {k: v for k, v in procedure_dict.items() if k.startswith(start_string)}
     print(sorted(fourdict.items(), key=lambda x: x[1], reverse = True))
  
 # Select by procedure
@@ -337,6 +347,29 @@ def select_procedure(source, condition):
     return output
 
 
-
-
+def setheartdown(pd):
+    pd_down = count_down(pd)
+    down = []
+    a = pd['pid'].to_list()
+    for i in a:
+        if i in pd_down['pid'].to_list():
+            down.append(1)
+        else:
+            down.append (0)
+    pd['down'] = down
+    pd_heart = count_heart(pd)
+    heart = []
+    for i in a:
+        if i in (pd_heart['pid'].to_list()):
+            heart.append(1)
+        else:
+            heart.append(0)
+    pd['heart'] = heart
+    return pd
     
+def setdead(pd):
+    death = pd['death_date'].notnull().tolist()  
+    pd['dead'] = death
+    pd['dead'] = pd['dead']*1
+    return pd
+
